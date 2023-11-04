@@ -1,21 +1,15 @@
+import { Grade } from "@/types";
 import jsdom from "jsdom";
 
 const { JSDOM } = jsdom;
 
-export const parseGrades = (html: string): any[] => {
+export const parseGrades = (html: string): Grade[] => {
   try {
     const dom = new JSDOM(html);
-    // const studentName = dom.window.document.querySelector(".page_title_variable")?.textContent;
+    // const student = dom.window.document.querySelector(".page_title_variable")?.textContent;
 
     const document = dom.window.document;
-    const evaluations: {
-      data: string;
-      voto: string;
-      materia: string;
-      tipo: string;
-      peso: string;
-      descrizione: string;
-    }[] = [];
+    const evaluations: Grade[] = [];
 
     const days = document.querySelectorAll(".registro");
 

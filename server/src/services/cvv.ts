@@ -1,4 +1,4 @@
-import { SESSION_TOKEN } from "@/constants";
+import { Grade } from "@/types";
 import { parseGrades } from "@/utils/parseGrades";
 import axios from "axios";
 import FormData from "form-data";
@@ -9,9 +9,9 @@ const URLS = {
 };
 
 export class CVV {
-  private loggedIn: boolean = true;
+  private loggedIn: boolean = false;
   private student: string = "";
-  private sessionCookie: string = `PHPSESSID=${SESSION_TOKEN}`;
+  private sessionCookie: string = "";
 
   constructor() {}
 
@@ -40,7 +40,8 @@ export class CVV {
 
     if (res?.data?.data?.auth?.verified) {
       this.loggedIn = true;
-      const cookie = res.headers?.["set-cookie"]?.[0];
+
+      const cookie = res.headers?.["set-cookie"]?.[1]?.slice(0, 42);
       if (cookie) {
         this.sessionCookie = cookie;
         console.log("Logged in!");
@@ -48,7 +49,7 @@ export class CVV {
     }
   }
 
-  public async getGrades(): Promise<any> {
+  public async getGrades(): Promise<Grade[] | undefined> {
     if (!this.loggedIn) return;
 
     const res = await axios.request({
@@ -69,5 +70,9 @@ export class CVV {
     if (!this.loggedIn) return;
     this.sessionCookie = "";
     this.loggedIn = false;
+  }
+
+  get cookie(): string {
+    return this.sessionCookie;
   }
 }
