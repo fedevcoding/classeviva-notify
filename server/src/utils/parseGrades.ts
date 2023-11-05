@@ -6,7 +6,6 @@ const { JSDOM } = jsdom;
 export const parseGrades = (html: string): Grade[] => {
   try {
     const dom = new JSDOM(html);
-    // const student = dom.window.document.querySelector(".page_title_variable")?.textContent;
 
     const document = dom.window.document;
     const evaluations: Grade[] = [];

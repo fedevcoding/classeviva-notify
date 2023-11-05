@@ -11,7 +11,6 @@ export type Grade = {
 
 export type User = {
   id: string;
-  name: string;
   prevGrades: Grade[];
   cvv: CVV;
 };

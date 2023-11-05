@@ -6,27 +6,34 @@ import express from "express";
 const loginRoute = express();
 
 loginRoute.get("/login", async (req, res) => {
-  const { username, password } = req.query;
+  try {
+    const { username, password } = req.query;
 
-  if (!username || !password) {
-    res.status(400).json({ error: "Missing username or password" });
-    return;
+    if (!username || !password) {
+      res.status(400).json({ error: "Missing username or password" });
+      return;
+    }
+
+    const strUsername = username.toString();
+    const strPass = password.toString();
+
+    const cvv = new CVV();
+    await cvv.login(strUsername, strPass);
+    const latestGrades: Grade[] = (await cvv.getGrades()) || [];
+
+    const user: User = {
+      id: strUsername,
+      prevGrades: latestGrades,
+      cvv,
+    };
+    USERS.push(user);
+
+    console.log(`${cvv.name} logged in`);
+
+    res.json({ success: true });
+  } catch (e) {
+    res.json({ success: false });
   }
-
-  const cvv = new CVV();
-  await cvv.login(username as string, password as string);
-  const latestGrades: Grade[] = [];
-
-  const user: User = {
-    id: username as string,
-    name: username as string,
-    prevGrades: latestGrades,
-    cvv,
-  };
-
-  USERS.push(user);
-
-  res.json({ success: true });
 });
 
 export default loginRoute;

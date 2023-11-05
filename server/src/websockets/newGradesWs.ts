@@ -1,15 +1,21 @@
 import { PollingWebsocket } from "ts-websockets";
 import { findNewGrades } from "@/utils/findNewGrades";
-import { Grade } from "@/types";
-import { USERS } from "@/cache/users";
+import { Grade, User } from "@/types";
+import { SUBSCRIBED_USERS } from "@/cache/users";
 
-export const newGradesWesocket = new PollingWebsocket<Grade>({
-  nameIdentifier: "test",
-  pollingInterval: 5000,
+type WS_EVENT = {
+  user: User;
+  newGrade: Grade;
+};
+
+export const newGradesWesocket = new PollingWebsocket<WS_EVENT>({
+  nameIdentifier: "Grades websocket",
+  pollingInterval: 3000, // Every minute
   pollingFunction: async () => {
     try {
-      USERS.forEach(async user => {
-        console.log("Polling...");
+      SUBSCRIBED_USERS.forEach(async user => {
+        console.log(`Polling ${user.cvv.name} grades`);
+
         const grades = await user.cvv.getGrades();
         if (!grades) return;
         const newGrades = findNewGrades(user.prevGrades, grades);
@@ -17,7 +23,12 @@ export const newGradesWesocket = new PollingWebsocket<Grade>({
         user.prevGrades = grades;
 
         newGrades.forEach(grade => {
-          newGradesWesocket.send(grade);
+          const event: WS_EVENT = {
+            newGrade: grade,
+            user,
+          };
+
+          newGradesWesocket.send(event);
         });
       });
     } catch (e) {
@@ -26,6 +37,6 @@ export const newGradesWesocket = new PollingWebsocket<Grade>({
   },
 });
 
-newGradesWesocket.onMessage(grade => {
-  console.log("YOU GOT A NEW GRADE!", grade.voto);
+newGradesWesocket.onMessage(event => {
+  console.log(`${event.user.cvv.name} GOT A NEW GRADE: ${event.newGrade.voto}!`);
 });

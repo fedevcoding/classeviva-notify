@@ -10,8 +10,9 @@ const URLS = {
 
 export class CVV {
   private loggedIn: boolean = false;
-  private student: string = "";
-  private sessionCookie: string = "";
+  public name: string | undefined;
+  public surname: string | undefined;
+  private sessionCookie: string | undefined;
 
   constructor() {}
 
@@ -38,14 +39,15 @@ export class CVV {
       data: data,
     });
 
-    if (res?.data?.data?.auth?.verified) {
+    const cookie = res.headers?.["set-cookie"]?.[1]?.slice(0, 42);
+    if (res?.data?.data?.auth?.verified && cookie) {
       this.loggedIn = true;
+      this.sessionCookie = cookie;
 
-      const cookie = res.headers?.["set-cookie"]?.[1]?.slice(0, 42);
-      if (cookie) {
-        this.sessionCookie = cookie;
-        console.log("Logged in!");
-      }
+      this.name = res?.data?.data?.auth?.accountInfo?.nome;
+      this.surname = res?.data?.data?.auth?.accountInfo?.cognome;
+    } else {
+      throw new Error("Wrong username or password");
     }
   }
 
@@ -72,7 +74,7 @@ export class CVV {
     this.loggedIn = false;
   }
 
-  get cookie(): string {
+  get cookie(): string | undefined {
     return this.sessionCookie;
   }
 }
