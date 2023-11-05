@@ -1,14 +1,14 @@
 import { PollingWebsocket } from "ts-websockets";
-import { users } from "..";
 import { findNewGrades } from "@/utils/findNewGrades";
 import { Grade } from "@/types";
+import { USERS } from "@/cache/users";
 
 export const newGradesWesocket = new PollingWebsocket<Grade>({
   nameIdentifier: "test",
   pollingInterval: 5000,
   pollingFunction: async () => {
     try {
-      users.forEach(async user => {
+      USERS.forEach(async user => {
         console.log("Polling...");
         const grades = await user.cvv.getGrades();
         if (!grades) return;
