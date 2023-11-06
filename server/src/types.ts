@@ -13,4 +13,5 @@ export type User = {
   id: string;
   prevGrades: Grade[];
   cvv: CVV;
+  chatId: number;
 };

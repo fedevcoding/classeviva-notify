@@ -2,6 +2,7 @@ import { PollingWebsocket } from "ts-websockets";
 import { findNewGrades } from "@/utils/findNewGrades";
 import { Grade, User } from "@/types";
 import { SUBSCRIBED_USERS } from "@/cache/users";
+import { TG_BOT } from "@/bot";
 
 type WS_EVENT = {
   user: User;
@@ -38,5 +39,6 @@ export const newGradesWesocket = new PollingWebsocket<WS_EVENT>({
 });
 
 newGradesWesocket.onMessage(event => {
-  console.log(`${event.user.cvv.name} GOT A NEW GRADE: ${event.newGrade.voto}!`);
+  TG_BOT.sendMessage(event.user.chatId, `You got a new grade: ${event.newGrade.voto}!`);
+  // console.log(`${event.user.cvv.name} GOT A NEW GRADE: ${event.newGrade.voto}!`);
 });
