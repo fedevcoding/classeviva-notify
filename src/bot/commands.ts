@@ -3,6 +3,7 @@ export const TELEGRAM_BOT_COMMANDS = {
   INFO: "/info",
   LOGIN: "/login",
   LOGOUT: "/logout",
+  GRADES: "/grades",
   SUBSCRIBE_GRADES: "/subscribegrades",
   UNSUBSCRIBE_GRADES: "/unsubscribegrades",
 } as const;
@@ -14,6 +15,7 @@ export const TELEGRAM_BOT_COMMANDS_DESCRIPTION: {
   INFO: "Show info about your account.",
   LOGIN: "Login to your classeviva account.",
   LOGOUT: "Logout from your classeviva account.",
+  GRADES: "Show your grades.",
   SUBSCRIBE_GRADES: "Subscribe to grades notifications.",
   UNSUBSCRIBE_GRADES: "Unsubscribe from grades notifications.",
 } as const;
