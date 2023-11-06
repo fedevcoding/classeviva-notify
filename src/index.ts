@@ -3,10 +3,13 @@ require("module-alias/register");
 import dotenv from "dotenv";
 dotenv.config();
 
-// import express from "express";
 import { connectWebsockets } from "./main";
-// import { useRoutes } from "./routes/useRoutes";
 import { startBot } from "./bot";
+connectWebsockets();
+startBot();
+
+// import express from "express";
+// import { useRoutes } from "./routes/useRoutes";
 
 // const port = process.env.PORT || 3000;
 // const app = express();
@@ -14,7 +17,5 @@ import { startBot } from "./bot";
 // useRoutes(app);
 
 // app.listen(port, async () => {
-connectWebsockets();
-startBot();
 // console.log(`App listening at http://localhost:${port}`);
 // });

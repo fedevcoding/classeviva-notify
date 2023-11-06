@@ -1,14 +1,23 @@
 import TelegramBot from "node-telegram-bot-api";
 import { CVV } from "./services/cvv";
 import { Grade, User } from "./types";
-import { SUBSCRIBED_USERS, USERS } from "./cache/users";
+import {
+  addAwaitingLogin,
+  addSubscribedGradeUser,
+  addUser,
+  getUser,
+  isAwaitingLogin,
+  removeAwaitingLogin,
+  removeSubscribedGradeUser,
+  removeUser,
+} from "./cache/users";
 import { HELP_MESSAGE, TELEGRAM_BOT_COMMANDS } from "./bot/commands";
 
 const token = process.env.TELEGRAM_BOT_API as string;
 export const TG_BOT = new TelegramBot(token, { polling: true });
 
 export const startBot = () => {
-  const awaitingLogins: number[] = [];
+  console.log("BOT ONLINE");
 
   TG_BOT.on("message", async msg => {
     const chatId = msg.chat.id;
@@ -17,7 +26,7 @@ export const startBot = () => {
     if (!message) return;
 
     // Check if user is about to type login info
-    if (awaitingLogins.includes(chatId)) {
+    if (isAwaitingLogin(chatId)) {
       try {
         const data = msg.text?.split(",");
 
@@ -37,7 +46,7 @@ export const startBot = () => {
           chatId,
         };
 
-        USERS.push(user);
+        addUser(user);
 
         TG_BOT.sendMessage(
           chatId,
@@ -47,7 +56,7 @@ export const startBot = () => {
         TG_BOT.sendMessage(chatId, `Something went wrong, is you username and password correct?`);
       } finally {
         // Remove from awaiting logins
-        awaitingLogins.splice(awaitingLogins.indexOf(chatId), 1);
+        removeAwaitingLogin(chatId);
 
         // Exit
         return;
@@ -69,7 +78,7 @@ export const startBot = () => {
 
       // INFO
       case TELEGRAM_BOT_COMMANDS.INFO: {
-        const user = USERS.find(user => user.chatId == chatId);
+        const user = getUser(chatId);
         if (!user) {
           TG_BOT.sendMessage(chatId, `Status: not logged in.`);
           return;
@@ -80,29 +89,29 @@ export const startBot = () => {
 
       // LOGIN
       case TELEGRAM_BOT_COMMANDS.LOGIN: {
-        if (awaitingLogins.includes(chatId)) return;
+        if (isAwaitingLogin(chatId)) return;
         TG_BOT.sendMessage(chatId, `Welcome! send your username and password separated by comma to login.`);
-        awaitingLogins.push(chatId);
+        addAwaitingLogin(chatId);
         break;
       }
 
       // LOGOUT
       case TELEGRAM_BOT_COMMANDS.LOGOUT: {
-        const user = USERS.find(user => user.chatId == chatId);
+        const user = getUser(chatId);
         if (!user) {
           TG_BOT.sendMessage(chatId, `No user logged in.`);
           return;
         }
-        USERS.splice(USERS.indexOf(user), 1);
+        removeUser(user);
         TG_BOT.sendMessage(chatId, `Sucesfully logged out from ${user.cvv.name}.`);
         break;
       }
 
       // SUBSCRIBE GRADES
       case TELEGRAM_BOT_COMMANDS.SUBSCRIBE_GRADES: {
-        const user = USERS.find(user => user.chatId == chatId);
+        const user = getUser(chatId);
         if (user) {
-          SUBSCRIBED_USERS.push(user);
+          addSubscribedGradeUser(user);
           TG_BOT.sendMessage(chatId, `${user.cvv.name} is now subscribed to grade notifications!`);
         } else {
           TG_BOT.sendMessage(chatId, `Run ${TELEGRAM_BOT_COMMANDS.LOGIN} first!`);
@@ -113,9 +122,9 @@ export const startBot = () => {
 
       // UNSUBSCRIBE GRADES
       case TELEGRAM_BOT_COMMANDS.UNSUBSCRIBE_GRADES: {
-        const user = USERS.find(user => user.chatId == chatId);
+        const user = getUser(chatId);
         if (user) {
-          SUBSCRIBED_USERS.splice(SUBSCRIBED_USERS.indexOf(user), 1);
+          removeSubscribedGradeUser(user);
           TG_BOT.sendMessage(chatId, `${user.cvv.name} is now unsubscribed from grade notifications!`);
         } else {
           TG_BOT.sendMessage(chatId, `No user logged in.`);
