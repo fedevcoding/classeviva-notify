@@ -1,3 +1,4 @@
+import { RELOGIN_INTERVAL } from "@/constants";
 import { Grade } from "@/types";
 import { parseGrades } from "@/utils/parseGrades";
 import axios from "axios";
@@ -15,6 +16,11 @@ export class CVV {
   public surname: string | undefined;
   private sessionCookie: string | undefined;
 
+  private username: string | undefined;
+  private password: string | undefined;
+
+  private loginInterval: NodeJS.Timeout | undefined;
+
   constructor() {}
 
   public isLoggedIn(): boolean {
@@ -22,7 +28,7 @@ export class CVV {
   }
 
   public async login(username: string, password: string): Promise<void> {
-    if (this.loggedIn) return;
+    // if (this.loggedIn) return;
 
     const data = new FormData();
     data.append("cid", "");
@@ -42,11 +48,22 @@ export class CVV {
 
     const cookie = res.headers?.["set-cookie"]?.[1]?.slice(0, 42);
     if (res?.data?.data?.auth?.verified && cookie) {
+      this.username = username;
+      this.password = password;
+
+      if (!this.loginInterval) {
+        this.loginInterval = setInterval(() => {
+          this.login(this.username!, this.password!);
+        }, RELOGIN_INTERVAL);
+      }
+
       this.loggedIn = true;
       this.sessionCookie = cookie;
 
       this.name = res?.data?.data?.auth?.accountInfo?.nome;
       this.surname = res?.data?.data?.auth?.accountInfo?.cognome;
+
+      console.log(`Logged in as ${this.name} ${this.surname}`);
     } else {
       throw new Error("Wrong username or password");
     }
@@ -66,13 +83,14 @@ export class CVV {
     const html = res.data;
     const grades = parseGrades(html);
 
-    // console.log(grades);
-
     return grades;
   }
 
   public async logout(): Promise<void> {
     if (!this.loggedIn) return;
+    if (this.loginInterval) {
+      clearInterval(this.loginInterval);
+    }
     this.sessionCookie = "";
     this.loggedIn = false;
   }

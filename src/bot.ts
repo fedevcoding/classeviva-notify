@@ -12,11 +12,11 @@ import {
   removeUser,
 } from "./cache/users";
 import { HELP_MESSAGE, TELEGRAM_BOT_COMMANDS } from "./bot/commands";
+import { TELEGRAM_BOT_API } from "./constants";
 
-const token = process.env.TELEGRAM_BOT_API as string;
-export const TG_BOT = new TelegramBot(token, { polling: true });
+export const TG_BOT = new TelegramBot(TELEGRAM_BOT_API, { polling: true });
 
-export const startBot = () => {
+export function startBot() {
   console.log("BOT ONLINE");
 
   TG_BOT.on("message", async msg => {
@@ -90,7 +90,10 @@ export const startBot = () => {
       // LOGIN
       case TELEGRAM_BOT_COMMANDS.LOGIN: {
         if (isAwaitingLogin(chatId)) return;
-        TG_BOT.sendMessage(chatId, `Welcome! send your username and password separated by comma to login.`);
+        TG_BOT.sendMessage(
+          chatId,
+          `Welcome! Type your username and password separated by comma to login example: myusername,mypassword`
+        );
         addAwaitingLogin(chatId);
         break;
       }
@@ -102,6 +105,8 @@ export const startBot = () => {
           TG_BOT.sendMessage(chatId, `No user logged in.`);
           return;
         }
+
+        user.cvv.logout();
         removeUser(user);
         TG_BOT.sendMessage(chatId, `Sucesfully logged out from ${user.cvv.name}.`);
         break;
@@ -139,4 +144,4 @@ export const startBot = () => {
       }
     }
   });
-};
+}

@@ -1,8 +1,9 @@
 import { PollingWebsocket } from "ts-websockets";
 import { findNewGrades } from "@/utils/findNewGrades";
 import { Grade, User } from "@/types";
-import { SUBSCRIBED_USERS } from "@/cache/users";
+import { SUBSCRIBED_GRADES_USERS } from "@/cache/users";
 import { TG_BOT } from "@/bot";
+import { GRADES_POLLING_INTERVAL } from "@/constants";
 
 type WS_EVENT = {
   user: User;
@@ -11,10 +12,10 @@ type WS_EVENT = {
 
 export const newGradesWesocket = new PollingWebsocket<WS_EVENT>({
   nameIdentifier: "Grades websocket",
-  pollingInterval: 3000, // Every minute
+  pollingInterval: GRADES_POLLING_INTERVAL,
   pollingFunction: async () => {
     try {
-      SUBSCRIBED_USERS.forEach(async user => {
+      SUBSCRIBED_GRADES_USERS.forEach(async user => {
         console.log(`Polling ${user.cvv.name} grades`);
 
         const grades = await user.cvv.getGrades();

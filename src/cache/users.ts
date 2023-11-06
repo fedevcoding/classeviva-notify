@@ -14,7 +14,7 @@ export const getUser = (chatId: number) => {
   return USERS.find(user => user.chatId == chatId);
 };
 
-const SUBSCRIBED_GRADES_USERS: User[] = [];
+export const SUBSCRIBED_GRADES_USERS: User[] = [];
 
 export const addSubscribedGradeUser = (user: User) => {
   SUBSCRIBED_GRADES_USERS.push(user);
