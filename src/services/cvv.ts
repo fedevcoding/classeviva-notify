@@ -30,60 +30,72 @@ export class CVV {
   public async login(username: string, password: string): Promise<void> {
     // if (this.loggedIn) return;
 
-    const data = new FormData();
-    data.append("cid", "");
-    data.append("uid", username);
-    data.append("pwd", password);
-    data.append("pin", "");
-    data.append("target", "");
+    try {
+      const data = new FormData();
+      data.append("cid", "");
+      data.append("uid", username);
+      data.append("pwd", password);
+      data.append("pin", "");
+      data.append("target", "");
 
-    const res = await axios.request({
-      method: "post",
-      url: URLS.LOGIN,
-      headers: {
-        ...data.getHeaders(),
-      },
-      data: data,
-    });
+      const res = await axios.request({
+        method: "post",
+        url: URLS.LOGIN,
+        headers: {
+          ...data.getHeaders(),
+        },
+        data: data,
+      });
 
-    const cookie = res.headers?.["set-cookie"]?.[1]?.slice(0, 42);
-    if (res?.data?.data?.auth?.verified && cookie) {
-      this.username = username;
-      this.password = password;
+      const cookie = res.headers?.["set-cookie"]?.[1]?.slice(0, 42);
+      if (res?.data?.data?.auth?.verified && cookie) {
+        this.username = username;
+        this.password = password;
 
-      if (!this.loginInterval) {
-        this.loginInterval = setInterval(() => {
-          this.login(this.username!, this.password!);
-        }, RELOGIN_INTERVAL);
+        if (!this.loginInterval) {
+          this.loginInterval = setInterval(() => {
+            this.login(this.username!, this.password!);
+          }, RELOGIN_INTERVAL);
+        }
+
+        this.loggedIn = true;
+        this.sessionCookie = cookie;
+
+        this.name = res?.data?.data?.auth?.accountInfo?.nome;
+        this.surname = res?.data?.data?.auth?.accountInfo?.cognome;
+
+        console.log(`Logged in as ${this.name} ${this.surname}`);
+      } else {
+        throw new Error("Wrong username or password");
       }
-
-      this.loggedIn = true;
-      this.sessionCookie = cookie;
-
-      this.name = res?.data?.data?.auth?.accountInfo?.nome;
-      this.surname = res?.data?.data?.auth?.accountInfo?.cognome;
-
-      console.log(`Logged in as ${this.name} ${this.surname}`);
-    } else {
-      throw new Error("Wrong username or password");
+    } catch (e) {
+      console.log("Error while logging in");
+      console.log(e);
+      throw new Error("Error while logging in");
     }
   }
 
   public async getGrades(): Promise<Grade[] | undefined> {
     if (!this.loggedIn) return;
 
-    const res = await axios.request({
-      method: "get",
-      url: URLS.GRADES,
-      headers: {
-        cookie: this.sessionCookie,
-      },
-    });
+    try {
+      const res = await axios.request({
+        method: "get",
+        url: URLS.GRADES,
+        headers: {
+          cookie: this.sessionCookie,
+        },
+      });
 
-    const html = res.data;
-    const grades = parseGrades(html);
+      const html = res.data;
+      const grades = parseGrades(html);
 
-    return grades;
+      return grades;
+    } catch (e) {
+      console.log("Error while getting grades");
+      console.log(e);
+      return;
+    }
   }
 
   public async logout(): Promise<void> {

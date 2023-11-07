@@ -114,26 +114,33 @@ export function startBot() {
 
       // GRADES
       case TELEGRAM_BOT_COMMANDS.GRADES: {
-        const user = getUser(chatId);
-        if (!user) {
-          TG_BOT.sendMessage(chatId, `No user logged in.`);
-          return;
-        }
+        try {
+          const user = getUser(chatId);
+          if (!user) {
+            TG_BOT.sendMessage(chatId, `No user logged in.`);
+            return;
+          }
 
-        const grades = await user.cvv.getGrades();
-        if (!grades) {
+          const grades = await user.cvv.getGrades();
+          if (!grades) {
+            TG_BOT.sendMessage(chatId, `Something went wrong, try again later.`);
+            return;
+          }
+
+          const gradesString = grades.map(grade => `${grade.materia}: ${grade.voto}`).join("\n");
+          TG_BOT.sendMessage(
+            chatId,
+            `### Your latest grades: ### 
+  
+  ${gradesString}`
+          );
+        } catch (err) {
+          console.log("Error while getting grades");
+          console.log(err);
           TG_BOT.sendMessage(chatId, `Something went wrong, try again later.`);
-          return;
+        } finally {
+          break;
         }
-
-        const gradesString = grades.map(grade => `${grade.materia}: ${grade.voto}`).join("\n");
-        TG_BOT.sendMessage(
-          chatId,
-          `### Your latest grades: ### 
-
-${gradesString}`
-        );
-        break;
       }
 
       // SUBSCRIBE GRADES
