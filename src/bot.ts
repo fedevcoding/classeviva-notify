@@ -7,6 +7,7 @@ import {
   addUser,
   getUser,
   isAwaitingLogin,
+  isSubscribedGrades,
   removeAwaitingLogin,
   removeSubscribedGradeUser,
   removeUser,
@@ -89,6 +90,11 @@ export function startBot() {
 
       // LOGIN
       case TELEGRAM_BOT_COMMANDS.LOGIN: {
+        const user = getUser(chatId);
+        if (user) {
+          TG_BOT.sendMessage(chatId, `You are already logged in as ${user.cvv.name}.`);
+          return;
+        }
         if (isAwaitingLogin(chatId)) return;
         TG_BOT.sendMessage(
           chatId,
@@ -147,6 +153,11 @@ export function startBot() {
       case TELEGRAM_BOT_COMMANDS.SUBSCRIBE_GRADES: {
         const user = getUser(chatId);
         if (user) {
+          const isSubGrades = isSubscribedGrades(user);
+          if (isSubGrades) {
+            TG_BOT.sendMessage(chatId, `${user.cvv.name} is already subscribed to grade notifications!`);
+            return;
+          }
           addSubscribedGradeUser(user);
           TG_BOT.sendMessage(chatId, `${user.cvv.name} is now subscribed to grade notifications!`);
         } else {
@@ -160,6 +171,11 @@ export function startBot() {
       case TELEGRAM_BOT_COMMANDS.UNSUBSCRIBE_GRADES: {
         const user = getUser(chatId);
         if (user) {
+          const isSubGrades = isSubscribedGrades(user);
+          if (!isSubGrades) {
+            TG_BOT.sendMessage(chatId, `${user.cvv.name} is not subscribed to grade notifications!`);
+            return;
+          }
           removeSubscribedGradeUser(user);
           TG_BOT.sendMessage(chatId, `${user.cvv.name} is now unsubscribed from grade notifications!`);
         } else {

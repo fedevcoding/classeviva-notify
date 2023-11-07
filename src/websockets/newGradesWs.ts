@@ -4,6 +4,7 @@ import { Grade, User } from "@/types";
 import { SUBSCRIBED_GRADES_USERS } from "@/cache/users";
 import { TG_BOT } from "@/bot";
 import { GRADES_POLLING_INTERVAL } from "@/constants";
+import { wait } from "@/utils";
 
 type WS_EVENT = {
   user: User;
@@ -15,11 +16,12 @@ export const newGradesWesocket = new PollingWebsocket<WS_EVENT>({
   pollingInterval: GRADES_POLLING_INTERVAL,
   pollingFunction: async () => {
     try {
-      SUBSCRIBED_GRADES_USERS.forEach(async user => {
+      for (const user of SUBSCRIBED_GRADES_USERS) {
         try {
           console.log(`Polling ${user.cvv.name} grades`);
 
           const grades = await user.cvv.getGrades();
+          await wait(2000);
           if (!grades) return;
           const newGrades = findNewGrades(user.prevGrades, grades);
 
@@ -37,7 +39,7 @@ export const newGradesWesocket = new PollingWebsocket<WS_EVENT>({
           console.log("Error while polling grades");
           console.log(e);
         }
-      });
+      }
     } catch (e) {
       console.log(e);
     }
