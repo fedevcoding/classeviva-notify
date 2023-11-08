@@ -33,8 +33,8 @@ export function startBot() {
 
         if (!data) throw new Error("Wrong username or password.");
 
-        const strUsername = data[0].toString();
-        const strPass = data[1].toString();
+        const strUsername = data[0].toString().trim();
+        const strPass = data[1].toString().trim();
 
         const cvv = new CVV();
         await cvv.login(strUsername, strPass);
@@ -98,7 +98,7 @@ export function startBot() {
         if (isAwaitingLogin(chatId)) return;
         TG_BOT.sendMessage(
           chatId,
-          `Welcome! Type your username and password separated by comma to login example: myusername,mypassword`
+          `To login type your username and password separated by COMMA (example: myusername, mypassword) - PAY ATTENTION TO THE FORMAT!`
         );
         addAwaitingLogin(chatId);
         break;

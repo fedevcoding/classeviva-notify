@@ -23,7 +23,6 @@
     "jsdom": "^22.1.0",
     "module-alias": "^2.2.3",
     "node-telegram-bot-api": "^0.64.0",
-    "telegram": "^2.19.10",
     "ts-websockets": "^0.0.5"
   },
   "devDependencies": {
