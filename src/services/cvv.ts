@@ -93,7 +93,6 @@ export class CVV {
       return grades;
     } catch (e) {
       console.log("Error while getting grades");
-      console.log(e);
       return;
     }
   }

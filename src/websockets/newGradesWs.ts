@@ -22,7 +22,7 @@ export const newGradesWesocket = new PollingWebsocket<WS_EVENT>({
 
           const grades = await user.cvv.getGrades();
           await wait(2000);
-          if (!grades) return;
+          if (!grades || grades.length === 0) return;
           const newGrades = findNewGrades(user.prevGrades, grades);
 
           user.prevGrades = grades;
