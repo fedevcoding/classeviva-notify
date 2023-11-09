@@ -47,5 +47,5 @@ export const newGradesWesocket = new PollingWebsocket<WS_EVENT>({
 });
 
 newGradesWesocket.onMessage(event => {
-  TG_BOT.sendMessage(event.user.chatId, `You got a new grade: ${event.newGrade.voto}!`);
+  TG_BOT.sendMessage(event.user.chatId, `You got a new grade in ${event.newGrade.materia}: ${event.newGrade.voto}`);
 });

@@ -136,9 +136,9 @@ export function startBot() {
           const gradesString = grades.map(grade => `${grade.materia}: ${grade.voto}`).join("\n");
           TG_BOT.sendMessage(
             chatId,
-            `### Your latest grades: ### 
-  
-  ${gradesString}`
+            `--- YOUR LATEST GRADES: ---
+
+${gradesString}`
           );
         } catch (err) {
           console.log("Error while getting grades");

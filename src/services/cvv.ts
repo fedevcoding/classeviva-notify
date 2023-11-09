@@ -7,7 +7,6 @@ import FormData from "form-data";
 const URLS = {
   LOGIN: "https://web.spaggiari.eu/auth-p7/app/default/AuthApi4.php?a=aLoginPwd",
   GRADES: "https://web.spaggiari.eu/cvv/app/default/genitori_note.php?ordine=data&filtro=tutto",
-  // GRADES: "http://lohalhost:4000",
 };
 
 export class CVV {
@@ -28,8 +27,6 @@ export class CVV {
   }
 
   public async login(username: string, password: string): Promise<void> {
-    // if (this.loggedIn) return;
-
     try {
       const data = new FormData();
       data.append("cid", "");
