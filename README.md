@@ -1,10 +1,17 @@
 # Telegram bot for classeviva
 
-### To run:
+### To run with node:
 
     npm i && npm run build && npm start
 
-#### <b>Note</b>: Hosting server should have an italian IP otherwhise classeviva login api will return an invalid response
+### To run with Docker:
+
+    docker build -t classeviva-bot .
+    docker run -d --name classeviva-bot classeviva-bot
+    // to see logs
+    docker logs --follow classeviva-bot
+
+#### <b>Note</b>: The hosting server should have an italian IP otherwhise classeviva login api will return an invalid response
 
 <br />
 
