@@ -21,8 +21,17 @@ export const newGradesWesocket = new PollingWebsocket<WS_EVENT>({
           console.log(`Polling ${user.cvv.name} grades`);
 
           const grades = await user.cvv.getGrades();
+          // Add a delay to avoid getting banned
           await wait(2000);
-          if (!grades || grades.length === 0) return;
+
+          if (!grades) continue;
+
+          // Probably session cookie expired and grades are incorrect
+          if (user.prevGrades.length > 0 && grades.length == 0) {
+            user.cvv.login();
+            continue;
+          }
+
           const newGrades = findNewGrades(user.prevGrades, grades);
 
           user.prevGrades = grades;

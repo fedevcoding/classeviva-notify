@@ -26,8 +26,19 @@ export class CVV {
     return this.loggedIn;
   }
 
-  public async login(username: string, password: string): Promise<void> {
+  public async login(username?: string, password?: string): Promise<void> {
     try {
+      // If no username or password provided, use the ones saved in the class
+      if (!username || !password) {
+        // If no username or password saved in the class, throw an error
+        if (!this.username || !this.password) {
+          throw new Error("No username or password provided");
+        }
+
+        username = this.username;
+        password = this.password;
+      }
+
       const data = new FormData();
       data.append("cid", "");
       data.append("uid", username);
@@ -51,7 +62,7 @@ export class CVV {
 
         if (!this.loginInterval) {
           this.loginInterval = setInterval(() => {
-            this.login(this.username!, this.password!);
+            this.login();
           }, RELOGIN_INTERVAL);
         }
 
