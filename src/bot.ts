@@ -133,13 +133,8 @@ export function startBot() {
             return;
           }
 
-          const gradesString = grades.map(grade => `${grade.materia}: ${grade.voto}`).join("\n");
-          TG_BOT.sendMessage(
-            chatId,
-            `--- YOUR LATEST GRADES: ---
-
-${gradesString}`
-          );
+          const gradesString = grades.map(grade => `- ${grade.materia}: ${grade.voto}`).join("\n");
+          TG_BOT.sendMessage(chatId, `- - - - - YOUR LATEST GRADES - - - - -\n\n${gradesString}`);
         } catch (err) {
           console.log("Error while getting grades");
           console.log(err);
