@@ -14,30 +14,43 @@ export const parseGrades = (html: string): Grade[] => {
 
     for (const day of days) {
       const data = day?.textContent?.trim();
-      const voto = day?.parentElement?.nextElementSibling?.querySelector(".cella_trattino")?.textContent?.trim();
-      const materia = day?.parentElement?.nextElementSibling?.querySelector(".cella_data")?.textContent?.trim();
-      const descrizione =
-        day?.parentElement?.nextElementSibling?.querySelectorAll("td")?.[5]?.querySelector("span")?.textContent || "";
+      let latestGradeOfDay = day.parentElement?.nextElementSibling;
 
-      const tipoEPeso = day?.parentElement?.nextElementSibling
-        ?.querySelectorAll("p")?.[2]
-        ?.querySelector("span")
-        ?.textContent?.split("Peso");
-      const tipo = tipoEPeso?.[0];
-      const peso = tipoEPeso?.[1].replace(": ", "");
+      while (true) {
+        const voto = latestGradeOfDay?.querySelector(".cella_trattino")?.textContent?.trim();
+        const materia = latestGradeOfDay?.querySelector(".cella_data")?.textContent?.trim();
+        const descrizione = latestGradeOfDay?.querySelectorAll("td")?.[5]?.querySelector("span")?.textContent || "";
 
-      if (!voto || !data || !materia || !tipo || !peso) continue;
+        const tipoEPeso = latestGradeOfDay
+          ?.querySelectorAll("p")?.[2]
+          ?.querySelector("span")
+          ?.textContent?.split("Peso");
+        const tipo = tipoEPeso?.[0];
+        const peso = tipoEPeso?.[1].replace(": ", "");
 
-      const evaluation = {
-        data,
-        voto,
-        materia,
-        tipo,
-        peso,
-        descrizione,
-      };
+        if (voto && data && materia && tipo && peso) {
+          const evaluation = {
+            data,
+            voto,
+            materia,
+            tipo,
+            peso,
+            descrizione,
+          };
 
-      evaluations.push(evaluation);
+          evaluations.push(evaluation);
+        }
+
+        if (
+          latestGradeOfDay?.nextElementSibling?.hasAttribute("align") ||
+          !latestGradeOfDay?.nextElementSibling ||
+          !latestGradeOfDay
+        ) {
+          break;
+        }
+
+        latestGradeOfDay = latestGradeOfDay?.nextElementSibling;
+      }
     }
 
     return evaluations;
