@@ -26,15 +26,15 @@ export const parseGrades = (html: string): Grade[] => {
           ?.querySelector("span")
           ?.textContent?.split("Peso");
         const tipo = tipoEPeso?.[0];
-        const peso = tipoEPeso?.[1].replace(": ", "");
+        const peso = tipoEPeso?.[1]?.replace(": ", "");
 
-        if (voto && data && materia && tipo && peso) {
+        if (voto && data && materia) {
           const evaluation = {
             data,
             voto,
             materia,
-            tipo,
-            peso,
+            tipo: tipo?.trim() || "",
+            peso: peso?.trim() || "",
             descrizione,
           };
 
