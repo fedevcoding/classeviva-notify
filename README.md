@@ -19,7 +19,7 @@ npm run dockerBuild && npm run dockerRun
 
 <br />
 
-# Working example bot username: @classeviva_voti_bot
+# Working example: [Here](https://t.me/classeviva_voti_bot)
 
 ## Commands:
 
