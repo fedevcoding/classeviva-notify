@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"npm start\"",
     "start": "node dist/index.js",
-    "build": "tsc"
+    "build": "tsc",
+    "dockerBuild": "docker build -t classeviva-bot .",
+    "dockerRun": "docker run -d --name classeviva-bot classeviva-bot",
+    "dockerLogs": "docker logs --follow classeviva-bot",
+    "dockerStop": "docker stop classeviva-bot"
   },
   "keywords": [],
   "author": "",
