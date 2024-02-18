@@ -15,4 +15,6 @@ jobs:
       - name: Delete old docker container
         run: sudo docker rm -f classeviva-bot || true
       - name: Run docker container
-        run: sudo docker run -d --name classeviva-bot fedevcoding/classeviva-bot
+        env:
+          TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}
+        run: sudo docker run -d --name classeviva-bot -e TELEGRAM_BOT_API=$TELEGRAM_BOT_API fedevcoding/classeviva-bot:latest
