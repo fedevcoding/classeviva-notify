@@ -20,14 +20,14 @@
     "@types/jsdom": "^21.1.4",
     "@types/node-telegram-bot-api": "^0.63.0",
     "axios": "^1.6.0",
+    "client-websockets": "^0.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "form-data": "^4.0.0",
     "jsdom": "^22.1.0",
     "module-alias": "^2.2.3",
-    "node-telegram-bot-api": "^0.64.0",
-    "ts-websockets": "^0.0.5"
+    "node-telegram-bot-api": "^0.64.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

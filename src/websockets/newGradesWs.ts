@@ -1,4 +1,4 @@
-import { PollingWebsocket } from "ts-websockets";
+import { PollingWebsocket } from "client-websockets";
 import { findNewGrades } from "@/utils/findNewGrades";
 import { Grade, User } from "@/types";
 import { SUBSCRIBED_GRADES_USERS } from "@/cache/users";
