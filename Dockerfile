@@ -1,18 +1,15 @@
-FROM node:18
+FROM node:21
 
 WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN npm install
+RUN yarn install
 
 # Copy the rest of the files
 COPY . .
 
-
-
-# Compile typescript to javascript
-RUN npm run build
+RUN yarn build
 
 # Start the bot
 CMD ["npm", "start"]
