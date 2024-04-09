@@ -1,19 +1,16 @@
 # Telegram bot for classeviva
 
-## To run with node:
+## To run locally (node):
 
 ```bash
-npm i && npm run build && npm start
+yarn install && yarn run build && yarn start
 ```
 
-## To run with Docker:
+## To run locally (docker):
 
 ```bash
-npm run dockerBuild && npm run dockerRun
+docker compose --env-file .env up --build -d
 ```
-
-- To see logs: `npm run dockerLogs`
-- To stop: `npm run dockerStop`
 
 #### <b>Note</b>: The hosting server should have an italian IP otherwhise classeviva login api will return an invalid response
 
