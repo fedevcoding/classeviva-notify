@@ -1,20 +1,18 @@
 name: CD
-
-on:
-  workflow_run:
-    workflows: ["CI"]
-    types: completed
-
+"on":
+  workflow_dispatch: null
+  push:
+    branches:
+      - production
 jobs:
   build:
     runs-on: self-hosted
-
     steps:
-      - name: Pull docker image
-        run: sudo docker pull fedevcoding/classeviva-bot:latest
-      - name: Delete old docker container
-        run: sudo docker rm -f classeviva-bot || true
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Run docker container
         env:
-          TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}
-        run: sudo docker run -d --name classeviva-bot -e TELEGRAM_BOT_API=$TELEGRAM_BOT_API fedevcoding/classeviva-bot:latest
+          TELEGRAM_BOT_API: "${{ secrets.TELEGRAM_BOT_API }}"
+        run: docker compose up --build -d --force-recreate
+      - name: Prune images
+        run: docker image prune -f

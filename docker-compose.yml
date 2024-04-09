@@ -1,0 +1,10 @@
+services:
+  classeviva-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - TELEGRAM_BOT_API=${TELEGRAM_BOT_API}
+    environment:
+      TELEGRAM_BOT_API: "${TELEGRAM_BOT_API}"
+    container_name: classeviva-app
