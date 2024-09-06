@@ -13,9 +13,9 @@ import {
   removeUser,
 } from "./cache/users";
 import { HELP_MESSAGE, TELEGRAM_BOT_COMMANDS } from "./bot/commands";
-import { TELEGRAM_BOT_API } from "./constants";
+import { env } from "./env";
 
-export const TG_BOT = new TelegramBot(TELEGRAM_BOT_API, { polling: true });
+export const TG_BOT = new TelegramBot(env.TELEGRAM_BOT_API, { polling: true });
 
 export function startBot() {
   console.log("BOT ONLINE");
