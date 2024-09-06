@@ -1,24 +1,16 @@
 # Telegram bot for classeviva
 
-## To run locally (node):
+## To run locally:
 
 ```bash
-yarn install && yarn run build && yarn start
+yarn install && yarn dev
 ```
 
-## To run locally (docker):
+#### <b>Note</b>: Classeviva login API accepts only italian IP's, so make sure the proxy in the envirorment variables has an italian IP
 
-```bash
-docker compose --env-file .env up --build -d
-```
+## Working example: [here](https://t.me/classeviva_voti_bot)
 
-#### <b>Note</b>: The hosting server should have an italian IP otherwhise classeviva login api will return an invalid response
-
-<br />
-
-# Working example: [Here](https://t.me/classeviva_voti_bot)
-
-## Commands:
+# Commands:
 
     /help : list all available commands
     /info : show logged user info
