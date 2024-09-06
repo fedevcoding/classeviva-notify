@@ -1,13 +1,19 @@
 import { RELOGIN_INTERVAL } from "@/constants";
+import { env } from "@/env";
 import { Grade } from "@/types";
 import { parseGrades } from "@/utils/parseGrades";
 import axios from "axios";
 import FormData from "form-data";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 const URLS = {
   LOGIN: "https://web.spaggiari.eu/auth-p7/app/default/AuthApi4.php?a=aLoginPwd",
   GRADES: "https://web.spaggiari.eu/cvv/app/default/genitori_note.php?ordine=data&filtro=tutto",
 };
+
+const httpsAgent = new HttpsProxyAgent(
+  `http://${env.PROXY_USERNAME}:${env.PROXY_PASSWORD}@${env.PROXY_HOST}:${env.PROXY_PORT}`
+);
 
 export class CVV {
   private loggedIn: boolean = false;
@@ -53,6 +59,7 @@ export class CVV {
           ...data.getHeaders(),
         },
         data: data,
+        httpsAgent,
       });
 
       const cookie = res.headers?.["set-cookie"]?.[1]?.slice(0, 42);
