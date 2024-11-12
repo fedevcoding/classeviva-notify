@@ -26,7 +26,7 @@ export class CVV {
 
   private loginInterval: NodeJS.Timeout | undefined;
 
-  constructor() {}
+  constructor() { }
 
   public isLoggedIn(): boolean {
     return this.loggedIn;
@@ -69,7 +69,7 @@ export class CVV {
 
         if (!this.loginInterval) {
           this.loginInterval = setInterval(() => {
-            this.login();
+            this.login().catch();
           }, RELOGIN_INTERVAL);
         }
 
@@ -85,7 +85,6 @@ export class CVV {
       }
     } catch (e) {
       console.log("Error while logging in");
-      console.log(e);
       throw new Error("Error while logging in");
     }
   }
