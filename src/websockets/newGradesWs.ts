@@ -28,7 +28,7 @@ export const newGradesWesocket = new PollingWebsocket<WS_EVENT>({
 
           // Probably session cookie expired and grades are incorrect
           if (user.prevGrades.length > 0 && grades.length == 0) {
-            user.cvv.login();
+            user.cvv.login().catch(() => { })
             continue;
           }
 
